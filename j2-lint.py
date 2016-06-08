@@ -40,4 +40,4 @@ if __name__ == "__main__":
     try:
         sys.exit(reduce(lambda r, fn: r + check(fn, sys.stdout, sys.stderr), sys.argv[1:], 0))
     except IndexError:
-        sys.stdout.write("Usage: j2-lint.py filename\n")
+        sys.stdout.write("Usage: j2-lint.py filename [filename ...]\n")
