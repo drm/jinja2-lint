@@ -1,5 +1,5 @@
 """
-@author Gerard van Helden <gerard@zicht.nl>
+@author Gerard van Helden <drm@melp.nl>
 @license DBAD, see <http://www.dbad-license.org/>
 
 Simple j2 linter, useful for checking jinja2 template syntax
@@ -19,9 +19,7 @@ class AbsolutePathLoader(jinja2.BaseLoader):
         return source, path, lambda: mtime == os.path.getmtime(path)
 
 
-def check(template, out, err):
-    env = jinja2.Environment(loader=AbsolutePathLoader())
-
+def check(template, out, err, env=jinja2.Environment(loader=AbsolutePathLoader())):
     try:
         env.get_template(template)
         out.write("%s: Syntax OK\n" % template)
@@ -33,11 +31,13 @@ def check(template, out, err):
         err.write("%s: Syntax check failed: %s in %s at %d\n" % (template, e.message, e.filename, e.lineno))
         return 1
 
+def main(**kwargs):
+    import sys
+    try:
+        sys.exit(reduce(lambda r, fn: r + check(fn, sys.stdout, sys.stderr, **kwargs), sys.argv[1:], 0))
+    except IndexError:
+        sys.stdout.write("Usage: j2lint.py filename [filename ...]\n")
 
 if __name__ == "__main__":
-    import sys
+    main()
 
-    try:
-        sys.exit(reduce(lambda r, fn: r + check(fn, sys.stdout, sys.stderr), sys.argv[1:], 0))
-    except IndexError:
-        sys.stdout.write("Usage: j2-lint.py filename [filename ...]\n")

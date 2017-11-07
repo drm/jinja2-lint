@@ -4,13 +4,23 @@ Every now and then, it's pretty useful to just have a cli tool that does the job
 
 ## Usage: ##
 ```
-python j2-lint.py my-template.j2
+python j2lint.py my-template.j2
 ```
 
 It accepts multiple arguments so shell expansion and/or combining with find is no issue:
 
 ```
-python j2-lint.py *.j2
-find src -type f -name "*.j2" -exec python j2-lint.py '{}' +
+python j2lint.py *.j2
+find src -type f -name "*.j2" -exec python j2lint.py '{}' +
 ```
 
+## Usage with custom filters, tests, etc ##
+
+If you want to use this linter with custom filters, tests, etc, you can easily
+extend the main cli endpoint by passing in a `env` keyword argument.
+
+The file [custom_check_example.py](custom_check_example.py) provides a working example for the filter
+'to_nice_json'. 
+
+Note that for linting it is not necessary to refer to the actual implementation
+of the filters, jinja2 only needs to know they exist.
