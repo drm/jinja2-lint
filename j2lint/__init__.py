@@ -31,6 +31,7 @@ def check(template, out, err, env=jinja2.Environment(loader=AbsolutePathLoader()
         err.write("%s: Syntax check failed: %s in %s at %d\n" % (template, e.message, e.filename, e.lineno))
         return 1
 
+
 def main(**kwargs):
     import sys
     try:
@@ -38,6 +39,6 @@ def main(**kwargs):
     except IndexError:
         sys.stdout.write("Usage: j2lint.py filename [filename ...]\n")
 
+
 if __name__ == "__main__":
     main()
-

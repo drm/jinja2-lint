@@ -1,0 +1,5 @@
+recursive-include j2lint *.py
+include LICENSE
+include setup.cfg
+include setup.py
+include README.md
