@@ -4,18 +4,18 @@
 
 Simple j2 linter, useful for checking jinja2 template syntax
 """
-import jinja2
+from jinja2 import BaseLoader, TemplateNotFound
 import os.path
 from functools import reduce
 
 
-class AbsolutePathLoader(jinja2.BaseLoader):
+class AbsolutePathLoader(BaseLoader):
     def get_source(self, environment, path):
         if not os.path.exists(path):
-            raise jinja2.TemplateNotFound(path)
+            raise TemplateNotFound(path)
         mtime = os.path.getmtime(path)
         with open(path) as f:
-            source = f.read()
+            source = f.read().decode('utf-8')
         return source, path, lambda: mtime == os.path.getmtime(path)
 
 
