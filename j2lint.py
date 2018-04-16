@@ -4,7 +4,7 @@
 
 Simple j2 linter, useful for checking jinja2 template syntax
 """
-from jinja2 import BaseLoader, TemplateNotFound, Environment
+from jinja2 import BaseLoader, TemplateNotFound, Environment, exceptions
 import os.path
 from functools import reduce
 
