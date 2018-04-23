@@ -6,9 +6,9 @@ and/or loader to add your own filter logic.
 import jinja2
 from j2lint import main, AbsolutePathLoader
 
-filters = ['to_nice_json']
+FILTER = ['to_nice_json']
 
-env = jinja2.Environment(loader=AbsolutePathLoader())
-env.filters.update({name: lambda: None for name in filters})
+ENV = jinja2.Environment(loader=AbsolutePathLoader())
+ENV.filters.update({name: lambda: None for name in FILTER})
 
-main(env=env)
+main(env=ENV)
