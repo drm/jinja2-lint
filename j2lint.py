@@ -19,7 +19,7 @@ class AbsolutePathLoader(BaseLoader):
         return source, template, lambda: mtime == os.path.getmtime(template)
 
 
-def check(template, out, err, env=Environment(loader=AbsolutePathLoader())):
+def check(template, out, err, env=Environment(loader=AbsolutePathLoader(),extensions=['jinja2.ext.i18n','jinja2.ext.do','jinja2.ext.loopcontrols'])):
     try:
         env.get_template(template)
         out.write("%s: Syntax OK\n" % template)
