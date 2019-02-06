@@ -25,3 +25,17 @@ The file [custom_check_example.py](custom_check_example.py) provides a working e
 
 Note that for linting it is not necessary to refer to the actual implementation
 of the filters, jinja2 only needs to know they exist.
+
+## Usage with docker ##
+
+To run this using docker, run:
+
+```
+docker run --rm -v "$(pwd)":/check kaictl/j2lint
+```
+
+Important options:
+
+* `-e CUSTOMLINT=path/to/custom/lint`: the path to a custom lint py file in the directory you're checking.
+  By default we check for `/custom.py`, so you can mount a file there instead of specifying this.
+* `-v "$(pwd)":/check`: mount the current directory to `/check` on the container
