@@ -6,6 +6,8 @@
 Simple j2 linter, useful for checking jinja2 template syntax
 """
 import os.path
+import argparse
+import sys
 from functools import reduce
 from jinja2 import BaseLoader, TemplateNotFound, Environment, exceptions
 
@@ -21,7 +23,8 @@ class AbsolutePathLoader(BaseLoader):
 def check(template, out, err, env=Environment(loader=AbsolutePathLoader(),extensions=['jinja2.ext.i18n','jinja2.ext.do','jinja2.ext.loopcontrols'])):
     try:
         env.get_template(template)
-        out.write("%s: Syntax OK\n" % template)
+        if not args.quiet:
+            out.write("%s: Syntax OK\n" % template)
         return 0
     except TemplateNotFound:
         err.write("%s: File not found\n" % template)
@@ -32,10 +35,14 @@ def check(template, out, err, env=Environment(loader=AbsolutePathLoader(),extens
         return 1
 
 def main(**kwargs):
-    import sys
+    global args
+    parser = argparse.ArgumentParser(description='Lint jinja2 files')
+    parser.add_argument('--quiet', action='store_true',help='Only print errors')
+    parser.add_argument('files', metavar='file', type=str, nargs='+',help='the files to lint')
+    args = parser.parse_args()
     try:
         status_code = reduce(lambda r, fn: r +
-                        check(fn, sys.stdout, sys.stderr, **kwargs), sys.argv[1:], 0)
+                        check(fn, sys.stdout, sys.stderr, **kwargs), args.files, 0)
         sys.exit(status_code)
     except IndexError:
         print("Usage: j2lint.py filename [filename ...]\n")
