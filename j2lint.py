@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 @author Gerard van Helden <drm@melp.nl>
 @license DBAD, see <http://www.dbad-license.org/>
@@ -34,10 +34,11 @@ def check(template, out, err, env=Environment(loader=AbsolutePathLoader(),extens
 def main(**kwargs):
     import sys
     try:
-        sys.exit(reduce(lambda r, fn: r +
-                        check(fn, sys.stdout, sys.stderr, **kwargs), sys.argv[1:], 0))
+        status_code = reduce(lambda r, fn: r +
+                        check(fn, sys.stdout, sys.stderr, **kwargs), sys.argv[1:], 0)
+        sys.exit(status_code)
     except IndexError:
-        sys.stdout.write("Usage: j2lint.py filename [filename ...]\n")
+        print("Usage: j2lint.py filename [filename ...]\n")
 
 if __name__ == "__main__":
     main()
