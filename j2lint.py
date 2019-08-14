@@ -11,6 +11,7 @@ import sys
 from functools import reduce
 from jinja2 import BaseLoader, TemplateNotFound, Environment, exceptions
 
+
 class AbsolutePathLoader(BaseLoader):
     def get_source(self, environment, template):
         if not os.path.exists(template):
@@ -20,7 +21,9 @@ class AbsolutePathLoader(BaseLoader):
             source = file.read()
         return source, template, lambda: mtime == os.path.getmtime(template)
 
-def check(template, out, err, env=Environment(loader=AbsolutePathLoader(),extensions=['jinja2.ext.i18n','jinja2.ext.do','jinja2.ext.loopcontrols'])):
+env=Environment(loader=AbsolutePathLoader(),extensions=['jinja2.ext.i18n','jinja2.ext.do','jinja2.ext.loopcontrols'])
+
+def check(template, out, err, ):
     try:
         env.get_template(template)
         if not args.quiet:
@@ -38,8 +41,11 @@ def main(**kwargs):
     global args
     parser = argparse.ArgumentParser(description='Lint jinja2 files')
     parser.add_argument('--quiet', action='store_true',help='Only print errors')
+    parser.add_argument('--filter', metavar='filter',type=str, nargs='+',help='Add custom jinja filter')
     parser.add_argument('files', metavar='file', type=str, nargs='+',help='the files to lint')
     args = parser.parse_args()
+    if args.filter:
+        env.filters.update({name: lambda: None for name in args.filter})
     try:
         status_code = reduce(lambda r, fn: r +
                         check(fn, sys.stdout, sys.stderr, **kwargs), args.files, 0)
