@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 @author Gerard van Helden <drm@melp.nl>
 @license DBAD, see <http://www.dbad-license.org/>
@@ -6,8 +6,11 @@
 Simple j2 linter, useful for checking jinja2 template syntax
 """
 import os.path
+import argparse
+import sys
 from functools import reduce
 from jinja2 import BaseLoader, TemplateNotFound, Environment, exceptions
+
 
 class AbsolutePathLoader(BaseLoader):
     def get_source(self, environment, template):
@@ -18,10 +21,13 @@ class AbsolutePathLoader(BaseLoader):
             source = file.read()
         return source, template, lambda: mtime == os.path.getmtime(template)
 
-def check(template, out, err, env=Environment(loader=AbsolutePathLoader(),extensions=['jinja2.ext.i18n','jinja2.ext.do','jinja2.ext.loopcontrols'])):
+env=Environment(loader=AbsolutePathLoader(),extensions=['jinja2.ext.i18n','jinja2.ext.do','jinja2.ext.loopcontrols'])
+
+def check(template, out, err, ):
     try:
         env.get_template(template)
-        out.write("%s: Syntax OK\n" % template)
+        if not args.quiet:
+            out.write("%s: Syntax OK\n" % template)
         return 0
     except TemplateNotFound:
         err.write("%s: File not found\n" % template)
@@ -32,12 +38,20 @@ def check(template, out, err, env=Environment(loader=AbsolutePathLoader(),extens
         return 1
 
 def main(**kwargs):
-    import sys
+    global args
+    parser = argparse.ArgumentParser(description='Lint jinja2 files')
+    parser.add_argument('--quiet', action='store_true',help='Only print errors')
+    parser.add_argument('--filter', metavar='filter',type=str, nargs='+',help='Add custom jinja filter')
+    parser.add_argument('files', metavar='file', type=str, nargs='+',help='the files to lint')
+    args = parser.parse_args()
+    if args.filter:
+        env.filters.update({name: lambda: None for name in args.filter})
     try:
-        sys.exit(reduce(lambda r, fn: r +
-                        check(fn, sys.stdout, sys.stderr, **kwargs), sys.argv[1:], 0))
+        status_code = reduce(lambda r, fn: r +
+                        check(fn, sys.stdout, sys.stderr, **kwargs), args.files, 0)
+        sys.exit(status_code)
     except IndexError:
-        sys.stdout.write("Usage: j2lint.py filename [filename ...]\n")
+        print("Usage: j2lint.py filename [filename ...]\n")
 
 if __name__ == "__main__":
     main()
