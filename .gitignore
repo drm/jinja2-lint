@@ -1,0 +1,5 @@
+# Visual Studio Code workspace
+*.code-workspace
+
+# Python3 venv
+venv/
