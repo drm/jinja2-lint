@@ -3,6 +3,6 @@
   description: Simple python script to lint jinja2 templates.
   language: python
   language_version: python3
-  entry: jinja2
+  entry: j2lint.py
   types_or: [html, jinja, twig]
   require_serial: true
