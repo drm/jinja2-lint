@@ -1,0 +1,8 @@
+- id: jinja2-lint
+  name: jinja2-lint
+  description: Simple python script to lint jinja2 templates.
+  language: python
+  language_version: python3
+  entry: jinja2
+  types_or: [html, jinja, twig]
+  require_serial: true
