@@ -1,7 +1,8 @@
 FROM alpine:latest
 
 USER root
-RUN apk add --no-cache ansible py3-ipaddr coreutils findutils && \
+RUN apk add --no-cache ansible py3-pip coreutils findutils && \
+    pip3 install --no-cache-dir ipaddr jinja2-ansible-filters && \
     ln -s /usr/bin/python3 /usr/bin/python && \
     mkdir -p /check
 
