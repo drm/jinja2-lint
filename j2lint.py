@@ -7,8 +7,11 @@ Simple j2 linter, useful for checking jinja2 template syntax
 """
 import os.path
 from functools import reduce
-from jinja2 import BaseLoader, TemplateNotFound, Environment, exceptions
+from jinja2 import BaseLoader, TemplateNotFound, Environment, exceptions, filters
+from jinja2_ansible_filters import AnsibleCoreFiltersExtension
+from ansible_collections.ansible.netcommon.plugins.filter import ipaddr
 
+filters.FILTERS['ipaddr'] = ipaddr
 class AbsolutePathLoader(BaseLoader):
     def get_source(self, environment, template):
         if not os.path.exists(template):
@@ -18,7 +21,14 @@ class AbsolutePathLoader(BaseLoader):
             source = file.read()
         return source, template, lambda: mtime == os.path.getmtime(template)
 
-def check(template, out, err, env=Environment(loader=AbsolutePathLoader(),extensions=['jinja2.ext.i18n','jinja2.ext.do','jinja2.ext.loopcontrols'])):
+def check(template, out, err,
+  env=Environment(loader=AbsolutePathLoader(),extensions=[
+    'jinja2.ext.i18n',
+    'jinja2.ext.do',
+    'jinja2.ext.loopcontrols',
+    'jinja2_ansible_filters.AnsibleCoreFiltersExtension'
+    ]
+  )):
     try:
         env.get_template(template)
         out.write("%s: Syntax OK\n" % template)
