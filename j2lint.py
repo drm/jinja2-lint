@@ -9,7 +9,7 @@ import os.path
 from functools import reduce
 from jinja2 import BaseLoader, TemplateNotFound, Environment, exceptions, filters
 from jinja2_ansible_filters import AnsibleCoreFiltersExtension
-from ansible_collections.ansible.netcommon.plugins.filter import ipaddr
+from ansible_collections.ansible.utils.plugins.filter import ipaddr
 
 filters.FILTERS['ipaddr'] = ipaddr
 class AbsolutePathLoader(BaseLoader):
